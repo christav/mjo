@@ -73,8 +73,14 @@ function walk(directories, iterator, done) {
 
 walk(__dirname, function(path, stats, done) {
   if (stats.isFile() && /-test\.js$/.test(path)) {
-    require(path);
+    var suite = require(path);
+    suite.onceDone(function () {
+      console.log('suite complete');
+      done();
+    });
+  } else {
+    done();
   }
-  done();
 }, function () {
+  console.log('test run complete');
 });

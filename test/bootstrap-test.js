@@ -18,7 +18,8 @@
 var joe = require('joe');
 var expect = require('chai').expect;
 
-joe.describe('Bootstrap suite', function (describe, it) {
+module.exports = joe.describe('Bootstrap suite', function (describe, it) {
+  this.setConfig({onError: 'ignore'});
   it('should run this', function () {
     expect(1).to.equal(1);
   });

@@ -18,14 +18,18 @@
 var joe = require('joe');
 var expect = require('chai').expect;
 
-joe.describe('Something suite', function (describe, it) {
-  it('should do something async', function (done) {
-    setTimeout(function () {
-      done();
-    }, 5000);
-  });
+module.exports = joe.describe('Something suite', function (describe, it) {
+  this.setConfig({onError: 'ignore'});
 
   it('should do something sync', function () {
-
+   //throw new Error('Hah, I failed!');
   });
+
+  it('should do something async', function (done) {
+    setTimeout(function () {
+      done(new Error('Async fail!'));
+    }, 500);
+  });
+
+  it('is incomplete');
 });
