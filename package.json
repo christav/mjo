@@ -1,0 +1,11 @@
+{
+  "name": "mjo",
+  "version": "0.0.1",
+  "description": "Functional construction of JSON and XML documents",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "author": "Chris Tavares (ctavares@microsoft.com)",
+  "license": "Apache"
+}
