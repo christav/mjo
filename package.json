@@ -4,8 +4,13 @@
   "description": "Functional construction of JSON and XML documents",
   "main": "lib/index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "node test/index.js"
   },
   "author": "Chris Tavares (ctavares@microsoft.com)",
-  "license": "Apache"
+  "license": "Apache",
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "joe": "^1.5.0",
+    "joe-reporter-console": "^1.2.1"
+  }
 }
