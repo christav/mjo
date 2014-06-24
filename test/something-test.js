@@ -21,7 +21,7 @@ var expect = require('chai').expect;
 joe.describe('Something suite', function (describe, it) {
   it('should do something async', function (done) {
     setTimeout(function () {
-      done(new Error("I failed"));
+      done();
     }, 5000);
   });
 

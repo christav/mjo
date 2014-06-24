@@ -20,28 +20,61 @@ var fs = require('fs');
 var path = require('path');
 
 //
-// Is this a test file?
+// Async foreach for arrays.
 //
-function isTestFile(dirname, filename) {
-  var pathname = path.join(dirname, filename);
-  var s = fs.statSync(pathname);
-  return s.isFile() && /-test\.js$/.test(filename);
-}
-
-fs.readdir(__dirname, function (err, files) {
-  if (err) {
-    console.log('Error: Could not read files,', err);
-    return;
+function eachAsync(array, iterator, done) {
+  if (array.length === 0) {
+    return done();
   }
 
-  var testfiles = files.filter(function (filename) {
-    return isTestFile(__dirname, filename);
-  })
-  .map(function (filename) {
-    return path.join(__dirname, filename);
+  iterator(array[0], function (err) {
+    if (err) { return done(err); }
+    eachAsync(array.slice(1), iterator, done);
   });
+}
 
-  testfiles.forEach(function (testfile) {
-    require(testfile);
+//
+// recursively walk directories, call function on each file
+// iterator takes (path, stat, callback).
+//
+function walk(directories, iterator, done) {
+  if (typeof directories === 'string') {
+    directories = [directories];
+  }
+
+  if (directories.length === 0) {
+    return done();
+  }
+
+  fs.readdir(directories[0], function (err, files) {
+    if (err) { return done(err); }
+
+    var filepaths = files
+      .map(function (filename) { return path.join(directories[0], filename) });
+
+    var newdirs = [];
+    eachAsync(filepaths, function (path, callback) {
+      var stat = fs.stat(path, function (err, filestats) {
+        if (err) { return callback(err); }
+        if (filestats.isDirectory()) {
+          newdirs.push(path);
+          return callback();
+        } else {
+          iterator(path, filestats, callback);
+        }
+      });
+    },
+    function (err) {
+      if (err) { return done(err); }
+      walk(directories.slice(1).concat(newdirs), iterator, done);
+    });
   });
+}
+
+walk(__dirname, function(path, stats, done) {
+  if (stats.isFile() && /-test\.js$/.test(path)) {
+    require(path);
+  }
+  done();
+}, function () {
 });
