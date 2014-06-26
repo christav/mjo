@@ -15,40 +15,4 @@
 
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var walk = require('walkdir');
-
-//
-// Async foreach for arrays.
-//
-function eachAsync(array, iterator, done) {
-  if (array.length === 0) {
-    return done();
-  }
-
-  iterator(array[0], function (err) {
-    if (err) { return done(err); }
-    eachAsync(array.slice(1), iterator, done);
-  });
-}
-
-function isTestScript(filename) {
-  return /-test.js$/.test(filename);
-}
-
-var testScripts = [];
-
-var walker = walk(__dirname);
-walker.on('file', function (filename, stat) {
-  if (isTestScript(filename)) {
-    testScripts.push(filename);
-  };
-});
-
-walker.on('end', function () {
-  eachAsync(testScripts, function (script, done) {
-    var suite = require(script);
-    suite.onceDone(done);
-  });
-});
+require('bulk-require')(__dirname, '**/*-test.js');
