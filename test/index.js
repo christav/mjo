@@ -15,9 +15,9 @@
 
 'use strict';
 
-var joe = require('joe');
 var fs = require('fs');
 var path = require('path');
+var walk = require('walkdir');
 
 //
 // Async foreach for arrays.
@@ -33,54 +33,22 @@ function eachAsync(array, iterator, done) {
   });
 }
 
-//
-// recursively walk directories, call function on each file
-// iterator takes (path, stat, callback).
-//
-function walk(directories, iterator, done) {
-  if (typeof directories === 'string') {
-    directories = [directories];
-  }
-
-  if (directories.length === 0) {
-    return done();
-  }
-
-  fs.readdir(directories[0], function (err, files) {
-    if (err) { return done(err); }
-
-    var filepaths = files
-      .map(function (filename) { return path.join(directories[0], filename) });
-
-    var newdirs = [];
-    eachAsync(filepaths, function (path, callback) {
-      var stat = fs.stat(path, function (err, filestats) {
-        if (err) { return callback(err); }
-        if (filestats.isDirectory()) {
-          newdirs.push(path);
-          return callback();
-        } else {
-          iterator(path, filestats, callback);
-        }
-      });
-    },
-    function (err) {
-      if (err) { return done(err); }
-      walk(directories.slice(1).concat(newdirs), iterator, done);
-    });
-  });
+function isTestScript(filename) {
+  return /-test.js$/.test(filename);
 }
 
-walk(__dirname, function(path, stats, done) {
-  if (stats.isFile() && /-test\.js$/.test(path)) {
-    var suite = require(path);
-    suite.onceDone(function () {
-      console.log('suite complete');
-      done();
-    });
-  } else {
-    done();
-  }
-}, function () {
-  console.log('test run complete');
+var testScripts = [];
+
+var walker = walk(__dirname);
+walker.on('file', function (filename, stat) {
+  if (isTestScript(filename)) {
+    testScripts.push(filename);
+  };
+});
+
+walker.on('end', function () {
+  eachAsync(testScripts, function (script, done) {
+    var suite = require(script);
+    suite.onceDone(done);
+  });
 });
