@@ -4,7 +4,7 @@
   "description": "Functional construction of JSON and XML documents",
   "main": "lib/index.js",
   "scripts": {
-    "test": "node test/index.js"
+    "test": "node -e \"require('bulk-require')('test', '**/*-test.js')\""
   },
   "author": "Chris Tavares (ctavares@microsoft.com)",
   "license": "Apache",
