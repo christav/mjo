@@ -10,6 +10,14 @@ function extendObject(target) {
   return sources.filter(isNotNullOrUndefined).reduce(createFromSource, target);
 }
 
+function propertyIf(condition, propName, value) {
+  if (condition) {
+    var result = {};
+    result[propName] = value;
+    return result;
+  }
+}
+
 function createFromSource(result, source) {
   if (isArgumentsObj(source)) {
     return createFromArray(result, Array.prototype.slice.call(source, 0));
@@ -65,4 +73,6 @@ if (typeof Object.assign === 'function') {
 }
 
 module.exports.o = createObject;
+module.exports.create = createObject;
 module.exports.extend = extendObject;
+module.exports.propIf = propertyIf;

@@ -1,6 +1,6 @@
 {
   "name": "mjo",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Functional construction of JSON and XML documents",
   "scripts": {
     "test": "node -e \"require('bulk-require')('test', '**/*-test.js')\""

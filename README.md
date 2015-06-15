@@ -18,6 +18,10 @@ Object literal plus if statements:
     if (dogs > 5) {
         msg.dogfood = 'lots';
     }
+
+    if (rabbits > 2) {
+        msg.rabbitfood = 'alfalfa';
+    }
 ```
 
 or mjo object creation expressions:
@@ -30,7 +34,9 @@ or mjo object creation expressions:
         // Can use an arbitrary expression
         cats > 2 ? { 'catfood': 2} : null,
         // Or call a function that returns an object or nothing
-        dogFood()
+        dogFood(),
+        // And there's a helpful shortcut
+        mjo.propIf(rabbits > 2, 'rabbitfood', 'alfalfa')
     );
 
     function dogFood() {
