@@ -11,7 +11,7 @@ function extendObject(target) {
 }
 
 function createFromSource(result, source) {
-  if (isArgumentsObj(result)) {
+  if (isArgumentsObj(source)) {
     return createFromArray(result, Array.prototype.slice.call(source, 0));
   }
 
