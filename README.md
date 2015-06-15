@@ -101,3 +101,17 @@ The `mjo.o` function can take any number of arguments. Those arguments can be:
 
     // result = { order: '123', name_a: 'a', name_b: 'b', name_c: 'c' }
 ```
+## Extending Objects
+
+Sometimes you want to add to an existing object rather than creating a new one. Also, the o() function doesn't have any mechanism to control the prototype of the created object. If you want to do that, or add onto an existing object, use mjo.extend.
+
+```javascript
+    var mjo = require('mjo');
+
+    var o1 = new SomeObject();
+    mjo.extend(o1, {x: 1, y: 2}, [{z: 3}]);
+
+    // o1 = {x: 1, y: 2, z: 3} plus whatever SomeObject provides
+```
+
+The `extend` function behaves identically to the `o` function, except that the first argument is the object to extend.
